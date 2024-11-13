@@ -1,6 +1,214 @@
 
 1.	Any shell scripting program. 
 
+1. Factorial (Using Recursion):
+bash
+Copy code
+#!/bin/bash
+factorial() {
+    if [ $1 -le 1 ]; then
+        echo 1
+    else
+        echo $(( $1 * $(factorial $(( $1 - 1 )) ) ))
+    fi
+}
+
+echo "Enter a number: "
+read num
+echo "Factorial of $num is $(factorial $num)"
+2. Palindrome (Number and String):
+bash
+Copy code
+#!/bin/bash
+is_palindrome() {
+    str=$1
+    rev=$(echo $str | rev)
+    if [ "$str" == "$rev" ]; then
+        echo "$str is a palindrome."
+    else
+        echo "$str is not a palindrome."
+    fi
+}
+
+echo "Enter a number or string: "
+read input
+is_palindrome $input
+3. Bubble Sort:
+bash
+Copy code
+#!/bin/bash
+bubble_sort() {
+    arr=("$@")
+    n=${#arr[@]}
+    for ((i = 0; i < n; i++)); do
+        for ((j = 0; j < n - i - 1; j++)); do
+            if [ "${arr[j]}" -gt "${arr[j+1]}" ]; then
+                temp=${arr[j]}
+                arr[j]=${arr[j+1]}
+                arr[j+1]=$temp
+            fi
+        done
+    done
+    echo "Sorted array: ${arr[@]}"
+}
+
+echo "Enter numbers separated by spaces: "
+read -a numbers
+bubble_sort "${numbers[@]}"
+4. Count Occurrences of a Substring:
+bash
+Copy code
+#!/bin/bash
+count_substring() {
+    string=$1
+    substring=$2
+    echo "$string" | grep -o "$substring" | wc -l
+}
+
+echo "Enter the main string: "
+read main_str
+echo "Enter the substring to find: "
+read sub_str
+echo "Occurrences of '$sub_str': $(count_substring "$main_str" "$sub_str")"
+5. Sum of Digits:
+bash
+Copy code
+#!/bin/bash
+sum_of_digits() {
+    num=$1
+    sum=0
+    while [ $num -gt 0 ]; do
+        sum=$((sum + num % 10))
+        num=$((num / 10))
+    done
+    echo $sum
+}
+
+echo "Enter a number: "
+read num
+echo "Sum of digits: $(sum_of_digits $num)"
+6. Reverse Digits:
+bash
+Copy code
+#!/bin/bash
+reverse_digits() {
+    num=$1
+    rev=0
+    while [ $num -gt 0 ]; do
+        rev=$((rev * 10 + num % 10))
+        num=$((num / 10))
+    done
+    echo $rev
+}
+
+echo "Enter a number: "
+read num
+echo "Reversed number: $(reverse_digits $num)"
+7. Armstrong Number:
+bash
+Copy code
+#!/bin/bash
+is_armstrong() {
+    num=$1
+    sum=0
+    temp=$num
+    while [ $temp -gt 0 ]; do
+        digit=$((temp % 10))
+        sum=$((sum + digit * digit * digit))
+        temp=$((temp / 10))
+    done
+    if [ $sum -eq $num ]; then
+        echo "$num is an Armstrong number."
+    else
+        echo "$num is not an Armstrong number."
+    fi
+}
+
+echo "Enter a number: "
+read num
+is_armstrong $num
+8. Array Operations (Insert, Delete, Search, Display):
+bash
+Copy code
+#!/bin/bash
+array_operations() {
+    arr=("$@")
+    echo "Array: ${arr[@]}"
+    echo "1. Insert element"
+    echo "2. Delete element"
+    echo "3. Search element"
+    echo "4. Display array"
+    echo "Choose an option: "
+    read option
+
+    case $option in
+        1)
+            echo "Enter element to insert: "
+            read element
+            arr+=($element)
+            echo "Array after insertion: ${arr[@]}"
+            ;;
+        2)
+            echo "Enter element to delete: "
+            read element
+            arr=("${arr[@]/$element}")
+            echo "Array after deletion: ${arr[@]}"
+            ;;
+        3)
+            echo "Enter element to search: "
+            read element
+            if [[ " ${arr[@]} " =~ " $element " ]]; then
+                echo "$element found in array."
+            else
+                echo "$element not found."
+            fi
+            ;;
+        4)
+            echo "Array: ${arr[@]}"
+            ;;
+        *)
+            echo "Invalid option."
+            ;;
+    esac
+}
+
+echo "Enter array elements separated by spaces: "
+read -a array
+array_operations "${array[@]}"
+9. Factorial (Without Recursion):
+bash
+Copy code
+#!/bin/bash
+factorial() {
+    num=$1
+    fact=1
+    for ((i = 1; i <= num; i++)); do
+        fact=$((fact * i))
+    done
+    echo $fact
+}
+
+echo "Enter a number: "
+read num
+echo "Factorial of $num is $(factorial $num)"
+10. Palindrome String:
+bash
+Copy code
+#!/bin/bash
+is_palindrome_string() {
+    str=$1
+    rev=$(echo $str | rev)
+    if [ "$str" == "$rev" ]; then
+        echo "$str is a palindrome string."
+    else
+        echo "$str is not a palindrome string."
+    fi
+}
+
+echo "Enter a string: "
+read str
+is_palindrome_string $str
+
 
 2.	Write a program demonstrating use of different system calls. 
 
