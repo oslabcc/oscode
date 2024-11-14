@@ -1,204 +1,222 @@
 
 1.	Any shell scripting program. 
-
-1. Factorial using recursion
-bash
-Copy code
 #!/bin/bash
 
-factorial_recursive() {
-  if [ $1 -le 1 ]; then
-    echo 1
-  else
-    local temp=$(( $1 - 1 ))
-    local result=$(factorial_recursive $temp)
-    echo $(( $1 * result ))
-  fi
+# Function for if-else statement 
+if_else_demo() {
+    read -p "Enter your age: " age
+    if (( age < 18 )); then
+        echo "You are a minor."
+    elif (( age <= 65 )); then
+        echo "You are an adult."
+    else
+        echo "You are a senior."
+    fi
 }
 
-# Example
-echo "Factorial of 5 (recursive): $(factorial_recursive 5)"
-2. Factorial without recursion (iterative)
-bash
-Copy code
-#!/bin/bash
-
-factorial_iterative() {
-  local n=$1
-  local result=1
-  for ((i=2; i<=n; i++)); do
-    result=$((result * i))
-  done
-  echo $result
-}
-
-# Example
-echo "Factorial of 5 (iterative): $(factorial_iterative 5)"
-3. Palindrome check (number or string)
-bash
-Copy code
-#!/bin/bash
-
-is_palindrome() {
-  local input=$1
-  local reversed=$(echo "$input" | rev)
-  if [ "$input" == "$reversed" ]; then
-    echo "Palindrome"
-  else
-    echo "Not a palindrome"
-  fi
-}
-
-# Example
-is_palindrome "racecar"
-is_palindrome "12321"
-4. Bubble Sort
-bash
-Copy code
-#!/bin/bash
-
-bubble_sort() {
-  arr=("$@")
-  local n=${#arr[@]}
-  for ((i=0; i<n-1; i++)); do
-    for ((j=0; j<n-i-1; j++)); do
-      if [ "${arr[j]}" -gt "${arr[$((j+1))]}" ]; then
-        temp=${arr[j]}
-        arr[j]=${arr[$((j+1))]}
-        arr[$((j+1))]=$temp
-      fi
+# Function for for loop to print numbers from start to end
+for_loop_demo() {
+    read -p "Enter the start number: " start
+    read -p "Enter the end number: " end
+    for (( i=start; i<=end; i++ )); do
+        echo "Number $i"
     done
-  done
-  echo "Sorted Array: ${arr[*]}"
 }
 
-# Example
-bubble_sort 4 2 9 1 5
-5. Count occurrences of a substring
-bash
-Copy code
-#!/bin/bash
+# Function to check if a number is prime
+is_prime() {
+    local num=$1
+    if (( num <= 1 )); then
+        return 1
+    fi
+    for (( i=2; i*i<=num; i++ )); do
+        if (( num % i == 0 )); then
+            return 1
+        fi
+    done
+    return 0
+}
 
+# Function for while loop demonstration (prime numbers)
+while_loop_demo() {
+    read -p "Enter a start number: " start
+    read -p "Enter an end number: " end
+    while (( start <= end )); do
+        if is_prime $start; then
+            echo "Prime number: $start"
+        fi
+        ((start++))
+    done
+}
+
+# Factorial using recursion
+factorial_recursion() {
+    local num=$1
+    if (( num == 0 || num == 1 )); then
+        echo 1
+    else
+        echo $(( num * $(factorial_recursion $(( num - 1 ))) ))
+    fi
+}
+
+# Factorial using an iterative method
+factorial_iterative() {
+    local num=$1
+    local factorial=1
+    for (( i=1; i<=num; i++ )); do
+        factorial=$(( factorial * i ))
+    done
+    echo $factorial
+}
+
+# Function for palindrome check (numbers or strings)
+is_palindrome() {
+    local input=$1
+    local reversed=$(echo "$input" | rev)
+    if [ "$input" == "$reversed" ]; then
+        echo "Palindrome"
+    else
+        echo "Not a palindrome"
+    fi
+}
+
+# Function for bubble sort
+bubble_sort() {
+    local arr=("$@")
+    local n=${#arr[@]}
+    for (( i=0; i<n-1; i++ )); do
+        for (( j=0; j<n-i-1; j++ )); do
+            if (( arr[j] > arr[j+1] )); then
+                # Swap elements
+                temp=${arr[j]}
+                arr[j]=${arr[j+1]}
+                arr[j+1]=$temp
+            fi
+        done
+    done
+    echo "Sorted Array: ${arr[@]}"
+}
+
+# Count occurrences of substring in a string
 count_substring() {
-  local string=$1
-  local substring=$2
-  echo "$string" | awk -v RS="$substring" 'END {print NR-1}'
+    local string=$1
+    local substring=$2
+    echo "$string" | awk -F"$substring" '{print NF-1}'
 }
 
-# Example
-echo "Occurrences of 'is' in 'This is a test. This is a demo.': $(count_substring 'This is a test. This is a demo.' 'is')"
-6. Sum of digits
-bash
-Copy code
-#!/bin/bash
-
+# Sum of digits of a number
 sum_of_digits() {
-  local num=$1
-  local sum=0
-  while [ $num -gt 0 ]; do
-    sum=$((sum + num % 10))
-    num=$((num / 10))
-  done
-  echo $sum
+    local num=$1
+    local sum=0
+    while (( num > 0 )); do
+        sum=$(( sum + num % 10 ))
+        num=$(( num / 10 ))
+    done
+    echo $sum
 }
 
-# Example
-echo "Sum of digits of 12345: $(sum_of_digits 12345)"
-7. Reverse digits of a number
-bash
-Copy code
-#!/bin/bash
-
-reverse_digit() {
-  local num=$1
-  local reverse=0
-  while [ $num -gt 0 ]; do
-    reverse=$((reverse * 10 + num % 10))
-    num=$((num / 10))
-  done
-  echo $reverse
+# Reverse the digits of a number
+reverse_digits() {
+    local num=$1
+    local reversed=0
+    while (( num > 0 )); do
+        reversed=$(( reversed * 10 + num % 10 ))
+        num=$(( num / 10 ))
+    done
+    echo $reversed
 }
 
-# Example
-echo "Reversed digits of 54321: $(reverse_digit 54321)"
-8. Armstrong number check
-bash
-Copy code
-#!/bin/bash
-
+# Armstrong number check
 is_armstrong() {
-  local num=$1
-  local sum=0
-  local n=$num
-  local digits=${#num}
-  while [ $n -gt 0 ]; do
-    local digit=$((n % 10))
-    sum=$((sum + digit ** digits))
-    n=$((n / 10))
-  done
-  if [ $sum -eq $num ]; then
-    echo "$num is an Armstrong number"
-  else
-    echo "$num is not an Armstrong number"
-  fi
+    local num=$1
+    local sum=0
+    local original=$num
+    while (( num > 0 )); do
+        digit=$(( num % 10 ))
+        sum=$(( sum + digit * digit * digit ))
+        num=$(( num / 10 ))
+    done
+    if (( sum == original )); then
+        echo "Armstrong number"
+    else
+        echo "Not an Armstrong number"
+    fi
 }
 
-# Example
-is_armstrong 153
-is_armstrong 9474
-9. Array operations
-bash
-Copy code
-#!/bin/bash
+# Display the menu
+while true; do
+    echo "Menu:"
+    echo "1) If-Else Statement"
+    echo "2) For Loop"
+    echo "3) While Loop"
+    echo "4) Factorial (Recursion)"
+    echo "5) Factorial (Iterative)"
+    echo "6) Palindrome Check"
+    echo "7) Bubble Sort"
+    echo "8) Count Occurrences of Substring"
+    echo "9) Sum of Digits"
+    echo "10) Reverse Digits"
+    echo "11) Armstrong Number Check"
+    echo "12) Exit"
+    read -p "Choose an option: " choice
 
-array_operations() {
-  arr=("$@")
-  echo "Array: ${arr[*]}"
-  echo "Length of array: ${#arr[@]}"
-  echo "First element: ${arr[0]}"
-  echo "Last element: ${arr[-1]}"
-  echo "Reversed Array: $(echo ${arr[@]} | tac -s ' ')"
-}
-
-# Example
-array_operations 3 5 7 9 11
-10. Factorial (Iterative or Recursive)
-Here is the iterative factorial already mentioned, but you can use either based on your preference.
-
-bash
-Copy code
-#!/bin/bash
-
-factorial() {
-  local n=$1
-  local result=1
-  for ((i=2; i<=n; i++)); do
-    result=$((result * i))
-  done
-  echo $result
-}
-
-# Example
-echo "Factorial of 5: $(factorial 5)"
-11. Palindrome string check
-bash
-Copy code
-#!/bin/bash
-
-is_palindrome_string() {
-  local input=$1
-  local reversed=$(echo "$input" | rev)
-  if [ "$input" == "$reversed" ]; then
-    echo "Palindrome"
-  else
-    echo "Not a palindrome"
-  fi
-}
-
-# Example
-is_palindrome_string "madam"
-is_palindrome_string "hello"
-
+    case $choice in
+        1)
+            if_else_demo
+            ;;
+        2)
+            for_loop_demo
+            ;;
+        3)
+            while_loop_demo
+            ;;
+        4)
+            read -p "Enter a number: " num
+            result=$(factorial_recursion $num)
+            echo "Factorial of $num (recursion) is $result"
+            ;;
+        5)
+            read -p "Enter a number: " num
+            result=$(factorial_iterative $num)
+            echo "Factorial of $num (iterative) is $result"
+            ;;
+        6)
+            read -p "Enter a number or string: " input
+            is_palindrome "$input"
+            ;;
+        7)
+            read -p "Enter array elements (space-separated): " -a arr
+            bubble_sort "${arr[@]}"
+            ;;
+        8)
+            read -p "Enter a string: " string
+            read -p "Enter a substring to count: " substring
+            count=$(count_substring "$string" "$substring")
+            echo "Occurrences of '$substring' in '$string': $count"
+            ;;
+        9)
+            read -p "Enter a number: " num
+            sum=$(sum_of_digits $num)
+            echo "Sum of digits of $num is $sum"
+            ;;
+        10)
+            read -p "Enter a number: " num
+            reversed=$(reverse_digits $num)
+            echo "Reversed digits of $num is $reversed"
+            ;;
+        11)
+            read -p "Enter a number: " num
+            is_armstrong $num
+            ;;
+        12)
+            echo "Exiting..."
+            break
+            ;;
+        *)
+            echo "Invalid option, please try again."
+            ;;
+    esac
+done
 
 
 
@@ -2025,6 +2043,81 @@ input :- 
 10 20 30 40 90 110 150 180
 
 22.	Write a program  for following 1)  zombie process 2),orphan processes 3)sum of even numbers of an array in parent and odd numbers of an array in child process
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+#define MAX 10
+
+// Function to calculate sum of even numbers
+int sumEven(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] % 2 == 0) {
+            sum += arr[i];
+        }
+    }
+    return sum;
+}
+
+// Function to calculate sum of odd numbers
+int sumOdd(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i < size; i++) {
+        if (arr[i] % 2 != 0) {
+            sum += arr[i];
+        }
+    }
+    return sum;
+}
+
+int main() {
+    int arr[MAX] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    pid_t pid;
+
+    // Fork the process
+    pid = fork();
+
+    if (pid > 0) { // Parent process
+        printf("Parent process (PID: %d)\n", getpid());
+        
+        // Parent calculates sum of even numbers
+        int evenSum = sumEven(arr, MAX);
+        printf("Parent: Sum of even numbers: %d\n", evenSum);
+        
+        // Wait for the child process to complete (to avoid Zombie Process)
+        wait(NULL);
+    }
+    else if (pid == 0) { // Child process
+        printf("Child process (PID: %d)\n", getpid());
+        
+        // Child calculates sum of odd numbers
+        int oddSum = sumOdd(arr, MAX);
+        printf("Child: Sum of odd numbers: %d\n", oddSum);
+
+        // Exit from child process
+        exit(0);
+    }
+    else {
+        // Fork failed
+        printf("Fork failed\n");
+        return 1;
+    }
+
+    // To simulate a Zombie process, the parent doesn't call wait()
+    // In this case, we comment out the wait() call for the parent process.
+    // Uncomment the following lines to simulate zombie process behavior:
+    /*
+    if (pid > 0) {
+        printf("Parent not calling wait, child becomes a zombie...\n");
+        sleep(10);  // Allow some time for the child process to terminate and become a zombie
+    }
+    */
+
+    return 0;
+}
 
 23.	Write a shell script to perform following operations on   student database.
 a) Insert b) Delete c)Update d)Search
