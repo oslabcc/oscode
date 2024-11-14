@@ -2,222 +2,117 @@
 1.	Any shell scripting program. 
 #!/bin/bash
 
-# Function for if-else statement 
-if_else_demo() {
-    read -p "Enter your age: " age
-    if (( age < 18 )); then
-        echo "You are a minor."
-    elif (( age <= 65 )); then
-        echo "You are an adult."
-    else
-        echo "You are a senior."
-    fi
+# Predefined values
+num_factorial=5       # Value for factorial 
+palindrome_str="madam"  # String palindrome
+arr=(5 3 8 4 2)       # Array  bubble sort
+substring="is"        # Substring to count occurrences
+string="VIT is GOOD CLG"  # String for substring counting
+num_sum=123           # Number for sum of digits
+num_reverse=54321     # Number to reverse and check if Armstrong
+
+factorial_rec() {
+  if (( $1 <= 1 )); then
+    echo 1
+  else
+    echo $(( $1 * $(factorial_rec $(( $1 - 1 ))) ))
+  fi
 }
 
-# Function for for loop to print numbers from start to end
-for_loop_demo() {
-    read -p "Enter the start number: " start
-    read -p "Enter the end number: " end
-    for (( i=start; i<=end; i++ )); do
-        echo "Number $i"
-    done
+factorial_non_rec() {
+  fact=1
+  for (( i=1; i<=num_factorial; i++ )); do
+    fact=$(( fact * i ))
+  done
+  echo $fact
 }
 
-# Function to check if a number is prime
-is_prime() {
-    local num=$1
-    if (( num <= 1 )); then
-        return 1
-    fi
-    for (( i=2; i*i<=num; i++ )); do
-        if (( num % i == 0 )); then
-            return 1
-        fi
-    done
-    return 0
+palindrome() {
+  rev=$(echo "$palindrome_str" | rev)
+  if [[ "$palindrome_str" == "$rev" ]]; then
+    echo "$palindrome_str is a Palindrome"
+  else
+    echo "$palindrome_str is Not a palindrome"
+  fi
 }
 
-# Function for while loop demonstration (prime numbers)
-while_loop_demo() {
-    read -p "Enter a start number: " start
-    read -p "Enter an end number: " end
-    while (( start <= end )); do
-        if is_prime $start; then
-            echo "Prime number: $start"
-        fi
-        ((start++))
-    done
-}
-
-# Factorial using recursion
-factorial_recursion() {
-    local num=$1
-    if (( num == 0 || num == 1 )); then
-        echo 1
-    else
-        echo $(( num * $(factorial_recursion $(( num - 1 ))) ))
-    fi
-}
-
-# Factorial using an iterative method
-factorial_iterative() {
-    local num=$1
-    local factorial=1
-    for (( i=1; i<=num; i++ )); do
-        factorial=$(( factorial * i ))
-    done
-    echo $factorial
-}
-
-# Function for palindrome check (numbers or strings)
-is_palindrome() {
-    local input=$1
-    local reversed=$(echo "$input" | rev)
-    if [ "$input" == "$reversed" ]; then
-        echo "Palindrome"
-    else
-        echo "Not a palindrome"
-    fi
-}
-
-# Function for bubble sort
 bubble_sort() {
-    local arr=("$@")
-    local n=${#arr[@]}
-    for (( i=0; i<n-1; i++ )); do
-        for (( j=0; j<n-i-1; j++ )); do
-            if (( arr[j] > arr[j+1] )); then
-                # Swap elements
-                temp=${arr[j]}
-                arr[j]=${arr[j+1]}
-                arr[j+1]=$temp
-            fi
-        done
+  sorted_arr=("${arr[@]}")
+  n=${#sorted_arr[@]}
+  for (( i=0; i<n-1; i++ )); do
+    for (( j=0; j<n-i-1; j++ )); do
+      if (( sorted_arr[j] > sorted_arr[j+1] )); then
+        temp=${sorted_arr[j]}
+        sorted_arr[j]=${sorted_arr[j+1]}
+        sorted_arr[j+1]=$temp
+      fi
     done
-    echo "Sorted Array: ${arr[@]}"
+  done
+  echo "Sorted array: ${sorted_arr[@]}"
 }
 
-# Count occurrences of substring in a string
-count_substring() {
-    local string=$1
-    local substring=$2
-    echo "$string" | awk -F"$substring" '{print NF-1}'
+count_occurrences() {
+  count=$(grep -o "$substring" <<< "$string" | wc -l)
+  echo "The substring '$substring' appears $count times in the string."
 }
 
-# Sum of digits of a number
 sum_of_digits() {
-    local num=$1
-    local sum=0
-    while (( num > 0 )); do
-        sum=$(( sum + num % 10 ))
-        num=$(( num / 10 ))
-    done
-    echo $sum
+  num=$num_sum
+  sum=0
+  while (( num > 0 )); do
+    sum=$(( sum + num % 10 ))
+    num=$(( num / 10 ))
+  done
+  echo "Sum of digits of $num_sum is $sum"
 }
 
-# Reverse the digits of a number
-reverse_digits() {
-    local num=$1
-    local reversed=0
-    while (( num > 0 )); do
-        reversed=$(( reversed * 10 + num % 10 ))
-        num=$(( num / 10 ))
-    done
-    echo $reversed
+reverse_and_armstrong() {
+  num=$num_reverse
+  reversed=0
+  sum=0
+  temp=$num
+
+  # Reverse the number
+  while (( temp > 0 )); do
+    digit=$(( temp % 10 ))
+    reversed=$(( reversed * 10 + digit ))
+    sum=$(( sum + digit ** ${#num} ))
+    temp=$(( temp / 10 ))
+  done
+
+  echo "Reversed number: $reversed"
+  if (( sum == num_reverse )); then
+    echo "$num_reverse is an Armstrong number"
+  else
+    echo "$num_reverse is not an Armstrong number"
+  fi
 }
 
-# Armstrong number check
-is_armstrong() {
-    local num=$1
-    local sum=0
-    local original=$num
-    while (( num > 0 )); do
-        digit=$(( num % 10 ))
-        sum=$(( sum + digit * digit * digit ))
-        num=$(( num / 10 ))
-    done
-    if (( sum == original )); then
-        echo "Armstrong number"
-    else
-        echo "Not an Armstrong number"
-    fi
-}
-
-# Display the menu
+# Main menu
 while true; do
-    echo "Menu:"
-    echo "1) If-Else Statement"
-    echo "2) For Loop"
-    echo "3) While Loop"
-    echo "4) Factorial (Recursion)"
-    echo "5) Factorial (Iterative)"
-    echo "6) Palindrome Check"
-    echo "7) Bubble Sort"
-    echo "8) Count Occurrences of Substring"
-    echo "9) Sum of Digits"
-    echo "10) Reverse Digits"
-    echo "11) Armstrong Number Check"
-    echo "12) Exit"
-    read -p "Choose an option: " choice
+  echo "Choose an option:"
+  echo "1. Factorial (Recursion)"
+  echo "2. Factorial (Non-Recursion)"
+  echo "3. Palindrome Check"
+  echo "4. Bubble Sort"
+  echo "5. Count Occurrences of Substring"
+  echo "6. Sum of Digits"
+  echo "7. Reverse and Armstrong Check"
+  echo "8. Exit"
+  read -p "Enter choice: " choice
 
-    case $choice in
-        1)
-            if_else_demo
-            ;;
-        2)
-            for_loop_demo
-            ;;
-        3)
-            while_loop_demo
-            ;;
-        4)
-            read -p "Enter a number: " num
-            result=$(factorial_recursion $num)
-            echo "Factorial of $num (recursion) is $result"
-            ;;
-        5)
-            read -p "Enter a number: " num
-            result=$(factorial_iterative $num)
-            echo "Factorial of $num (iterative) is $result"
-            ;;
-        6)
-            read -p "Enter a number or string: " input
-            is_palindrome "$input"
-            ;;
-        7)
-            read -p "Enter array elements (space-separated): " -a arr
-            bubble_sort "${arr[@]}"
-            ;;
-        8)
-            read -p "Enter a string: " string
-            read -p "Enter a substring to count: " substring
-            count=$(count_substring "$string" "$substring")
-            echo "Occurrences of '$substring' in '$string': $count"
-            ;;
-        9)
-            read -p "Enter a number: " num
-            sum=$(sum_of_digits $num)
-            echo "Sum of digits of $num is $sum"
-            ;;
-        10)
-            read -p "Enter a number: " num
-            reversed=$(reverse_digits $num)
-            echo "Reversed digits of $num is $reversed"
-            ;;
-        11)
-            read -p "Enter a number: " num
-            is_armstrong $num
-            ;;
-        12)
-            echo "Exiting..."
-            break
-            ;;
-        *)
-            echo "Invalid option, please try again."
-            ;;
-    esac
+  case $choice in
+    1) echo "Factorial (Recursion) of $num_factorial: $(factorial_rec $num_factorial)" ;;
+    2) echo "Factorial (Non-Recursion) of $num_factorial: $(factorial_non_rec)" ;;
+    3) palindrome ;;
+    4) bubble_sort ;;
+    5) count_occurrences ;;
+    6) sum_of_digits ;;
+    7) reverse_and_armstrong ;;
+    8) echo "Exiting..."; break ;;
+    *) echo "Invalid choice. Please try again." ;;
+  esac
 done
-
 
 
 2.	Write a program demonstrating use of different system calls. 
